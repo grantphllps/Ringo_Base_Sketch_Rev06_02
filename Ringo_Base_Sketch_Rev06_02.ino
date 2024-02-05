@@ -27,12 +27,20 @@ void setup() {
   HardwareBegin();        //initialize Ringo's brain to work with his circuitry
   PlayStartChirp();       //Play startup chirp and blink eyes
 
-  xTaskCreate(
+  /*xTaskCreate(
      TaskBlink
       ,  (const portCHAR *)"Blink"   // A name just for humans
       ,  128  // This stack size can be checked & adjusted by reading the Stack Highwater
       ,  NULL
-      ,  2  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
+      ,  1  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
+      ,  NULL );*/
+
+  xTaskCreate(
+     SongDancingQueen
+      ,  (const portCHAR *)"Song"   // A name just for humans
+      ,  128  // This stack size can be checked & adjusted by reading the Stack Highwater
+      ,  NULL
+      ,  1  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
       ,  NULL );
 }
 
@@ -50,3 +58,91 @@ void TaskBlink(void *pvParameters)  // This is a task.
     vTaskDelay( 1000 / portTICK_PERIOD_MS ); // wait for one second
   }
 }
+
+
+void SongDancingQueen(void *pvParameters)  // This is a task.
+{
+  (void) pvParameters;
+
+  for (;;) // A Task shall never return or exit.
+  {
+    SetAllPixelsRGB(0,0,0);
+
+    PlayChirp(NOTE_E5, 50);
+    vTaskDelay(500 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+    
+    PlayChirp(NOTE_FS5, 50);
+    vTaskDelay(600 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_GS5, 50);
+    vTaskDelay(500 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_GS5, 50);
+    vTaskDelay(600 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_A5, 50);
+    vTaskDelay(200 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_A5, 50);
+    vTaskDelay(700 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_GS5, 50);
+    vTaskDelay(700 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_A5, 50);
+    vTaskDelay(200 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_A5, 50);
+    vTaskDelay(700 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_B5, 50);
+    vTaskDelay(400 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_GS5, 50);
+    vTaskDelay(400 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_A5, 50);
+    vTaskDelay(200 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_A5, 50);
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    
+    OffChirp();
+    vTaskDelay(18000 / portTICK_PERIOD_MS);
+
+
+  }
+}
+
+
+
+
+
+
