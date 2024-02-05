@@ -46,7 +46,7 @@ void setup() {
 
 void loop() {}
 
-void TaskBlink(void *pvParameters)  // This is a task.
+/*void TaskBlink(void *pvParameters)  // This is a task.
 {
   (void) pvParameters;
 
@@ -57,7 +57,7 @@ void TaskBlink(void *pvParameters)  // This is a task.
     OffEyes();
     vTaskDelay( 1000 / portTICK_PERIOD_MS ); // wait for one second
   }
-}
+}*/
 
 
 void SongDancingQueen(void *pvParameters)  // This is a task.
@@ -66,8 +66,51 @@ void SongDancingQueen(void *pvParameters)  // This is a task.
 
   for (;;) // A Task shall never return or exit.
   {
-    SetAllPixelsRGB(0,0,0);
+    //SetAllPixelsRGB(0,0,0);
+    OnEyes(20,0,0);
 
+    //and when you get the chance
+    PlayChirp(NOTE_A4, 50);
+    vTaskDelay(450 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_B4, 50);
+    vTaskDelay(450 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_CS5, 50);
+    vTaskDelay(450 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_CS5, 50);
+    vTaskDelay(450 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_D5, 50);
+    vTaskDelay(450 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_D5, 50);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
+    //OffChirp();
+    //vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_CS5, 50);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
+    //OffChirp();
+    //vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_B4, 50);
+    vTaskDelay(800 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
+
+    //You are the dancing queen
     PlayChirp(NOTE_E5, 50);
     vTaskDelay(500 / portTICK_PERIOD_MS);
     OffChirp();
@@ -79,7 +122,7 @@ void SongDancingQueen(void *pvParameters)  // This is a task.
     vTaskDelay(25 / portTICK_PERIOD_MS);
 
     PlayChirp(NOTE_GS5, 50);
-    vTaskDelay(500 / portTICK_PERIOD_MS);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
     OffChirp();
     vTaskDelay(25 / portTICK_PERIOD_MS);
 
@@ -89,22 +132,24 @@ void SongDancingQueen(void *pvParameters)  // This is a task.
     vTaskDelay(25 / portTICK_PERIOD_MS);
 
     PlayChirp(NOTE_A5, 50);
-    vTaskDelay(200 / portTICK_PERIOD_MS);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
     OffChirp();
     vTaskDelay(25 / portTICK_PERIOD_MS);
 
     PlayChirp(NOTE_A5, 50);
-    vTaskDelay(700 / portTICK_PERIOD_MS);
+    vTaskDelay(600 / portTICK_PERIOD_MS);
     OffChirp();
-    vTaskDelay(25 / portTICK_PERIOD_MS);
+    vTaskDelay(500 / portTICK_PERIOD_MS);
 
+    
+    //Young and sweet
     PlayChirp(NOTE_GS5, 50);
-    vTaskDelay(700 / portTICK_PERIOD_MS);
+    vTaskDelay(600 / portTICK_PERIOD_MS);
     OffChirp();
     vTaskDelay(25 / portTICK_PERIOD_MS);
 
     PlayChirp(NOTE_A5, 50);
-    vTaskDelay(200 / portTICK_PERIOD_MS);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
     OffChirp();
     vTaskDelay(25 / portTICK_PERIOD_MS);
 
@@ -113,8 +158,9 @@ void SongDancingQueen(void *pvParameters)  // This is a task.
     OffChirp();
     vTaskDelay(25 / portTICK_PERIOD_MS);
 
+    //Only seventeen
     PlayChirp(NOTE_B5, 50);
-    vTaskDelay(400 / portTICK_PERIOD_MS);
+    vTaskDelay(600 / portTICK_PERIOD_MS);
     OffChirp();
     vTaskDelay(25 / portTICK_PERIOD_MS);
 
@@ -124,18 +170,268 @@ void SongDancingQueen(void *pvParameters)  // This is a task.
     vTaskDelay(25 / portTICK_PERIOD_MS);
 
     PlayChirp(NOTE_A5, 50);
-    vTaskDelay(200 / portTICK_PERIOD_MS);
+    vTaskDelay(600 / portTICK_PERIOD_MS);
     OffChirp();
     vTaskDelay(25 / portTICK_PERIOD_MS);
 
     PlayChirp(NOTE_A5, 50);
     vTaskDelay(1000 / portTICK_PERIOD_MS);
     OffChirp();
+    vTaskDelay(1500 / portTICK_PERIOD_MS);
+
+    //Dancing Queen
+    PlayChirp(NOTE_GS5, 50);
+    vTaskDelay(600 / portTICK_PERIOD_MS);
+    OffChirp();
     vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_A5, 50);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_A5, 50);
+    vTaskDelay(600 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(600 / portTICK_PERIOD_MS);
+
+    //Feel the beat from the tambourine
+    PlayChirp(NOTE_GS5, 50);
+    vTaskDelay(600 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_A5, 50);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_A5, 50);
+    vTaskDelay(600 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_B5, 50);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_A5, 50);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_B5, 50);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_CS6, 50);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_CS6, 50);
+    vTaskDelay(600 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+
+
+    //oh yeah
+
+    PlayChirp(NOTE_B5, 50);
+    vTaskDelay(600 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_CS5, 50);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
+    //OffChirp();
+    //vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_B5, 50);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
+    //OffChirp();
+    //vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_A5, 50);
+    vTaskDelay(800 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(1200 / portTICK_PERIOD_MS);
+
+    //you can dance
+    PlayChirp(NOTE_CS6, 50);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
+    //OffChirp();
+    //vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_B5, 50);
+    vTaskDelay(600 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_B5, 50);
+    vTaskDelay(900 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(600 / portTICK_PERIOD_MS);
+
+    //you can jive
+
+    PlayChirp(NOTE_CS6, 50);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
+    //OffChirp();
+    //vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_B5, 50);
+    vTaskDelay(600 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_B5, 50);
+    vTaskDelay(600 / portTICK_PERIOD_MS);
+    //OffChirp();
+    //vTaskDelay(600 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_CS6, 50);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(600 / portTICK_PERIOD_MS);
+
+    //having the time of your life, oh
+    PlayChirp(NOTE_A5, 50);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_B5, 50);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_GS5, 50);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_A5, 50);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_B5, 50);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_GS5, 50);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_A5, 50);
+    vTaskDelay(150 / portTICK_PERIOD_MS);
+    //OffChirp();
+    //vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_GS5, 50);
+    vTaskDelay(150 / portTICK_PERIOD_MS);
+    //OffChirp();
+    //vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_FS5, 50);
+    vTaskDelay(900 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    //ooh
+    PlayChirp(NOTE_CS6, 50);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(600 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_B5, 50);
+    vTaskDelay(600 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_A5, 50);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_GS5, 50);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    //see that girl
+    PlayChirp(NOTE_GS5, 50);
+    vTaskDelay(600 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_A5, 50);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_A5, 50);
+    vTaskDelay(600 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(600 / portTICK_PERIOD_MS);
+
+    //watch that scene
+    PlayChirp(NOTE_GS5, 50);
+    vTaskDelay(600 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_A5, 50);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_A5, 50);
+    vTaskDelay(600 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(600 / portTICK_PERIOD_MS);
+
+    //digin the dancing queen
+    PlayChirp(NOTE_B5, 50);
+    vTaskDelay(150 / portTICK_PERIOD_MS);
+    //OffChirp();
+    //vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_A5, 50);
+    vTaskDelay(150 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_GS5, 50);
+    vTaskDelay(450 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_GS5, 50);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_A5, 50);
+    vTaskDelay(300 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
+    PlayChirp(NOTE_A5, 50);
+    vTaskDelay(900 / portTICK_PERIOD_MS);
+    OffChirp();
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+
 
     
     OffChirp();
-    vTaskDelay(18000 / portTICK_PERIOD_MS);
+    vTaskDelay(10000 / portTICK_PERIOD_MS);
 
 
   }
