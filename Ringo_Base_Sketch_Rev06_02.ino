@@ -33,10 +33,10 @@ void setup() {
 
   xTaskCreate(
      TaskBlink
-      ,  (const portCHAR *)"Blink"   // A name just for humans
+      ,  (const portCHAR *)"Remote"   // A name just for humans
       ,  128  // This stack size can be checked & adjusted by reading the Stack Highwater
       ,  NULL
-      ,  3  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
+      ,  2  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
       ,  NULL );
 
   xTaskCreate(
@@ -44,8 +44,17 @@ void setup() {
       ,  (const portCHAR *)"Song"   // A name just for humans
       ,  128  // This stack size can be checked & adjusted by reading the Stack Highwater
       ,  NULL
-      ,  1  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
+      ,  2  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
       ,  NULL );
+
+  xTaskCreate(
+     LeftRightDance
+      ,  (const portCHAR *)"Dance"   // A name just for humans
+      ,  128  // This stack size can be checked & adjusted by reading the Stack Highwater
+      ,  NULL
+      ,  2  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
+      ,  NULL );
+  
 }
 
 void loop() {}
@@ -68,26 +77,21 @@ void TaskBlink(void *pvParameters)  // This is a task.
 
          case 1:                    // Button 1
          RxIRRestart(4);            // restart wait for 4 byte IR remote command
-         OnEyes(220,30,160);   // turn eyes to plum
-         vTaskDelay(1000 / portTICK_PERIOD_MS);               // brief delay
-         OffPixels();
+         OnEyes(220, 30, 160);   // turn eyes to plum
+         //vTaskDelay(1000 / portTICK_PERIOD_MS);               // brief delay
+         //OffPixels();
          break;
 
          case 2:                    // Button 2
          RxIRRestart(4);            // restart wait for 4 byte IR remote command
-         Motors(-50, 50);
-         vTaskDelay(100 / portTICK_PERIOD_MS);
-         Motors(0, 0);
-         vTaskDelay(100 / portTICK_PERIOD_MS);
-         Motors(50, -50);
-         vTaskDelay(100 / portTICK_PERIOD_MS);
-         Motors(0, 0);
-         vTaskDelay(100 / portTICK_PERIOD_MS);
+         OnEyes(120, 0, 0);   // turn eyes red
+         //vTaskDelay(1000 / portTICK_PERIOD_MS);               // brief delay
+         //OffPixels();
          break;
 
          case 3:                    // Button 3
          RxIRRestart(4);            // restart wait for 4 byte IR remote command
-         OnEyes(120,60,160);   // turn eyes to plum
+         OnEyes(0, 0, 160);   // turn eyes blue
          vTaskDelay(1000 / portTICK_PERIOD_MS);               // brief delay
          OffPixels();
          break;
@@ -106,18 +110,29 @@ void TaskBlink(void *pvParameters)  // This is a task.
   }
 }
 
+void LeftRightDance(void *pvParameters)
+{
+  (void) pvParameters;
+  for (;;) // A Task shall never return or exit.
+    {
+      Motors(-50, 50);
+      vTaskDelay(125 / portTICK_PERIOD_MS);
+      Motors(0, 0);
+      vTaskDelay(125 / portTICK_PERIOD_MS);
+      Motors(50, -50);
+      vTaskDelay(125 / portTICK_PERIOD_MS);
+      Motors(0, 0);
+      vTaskDelay(1000 / portTICK_PERIOD_MS);
+    }
+}
+
 
 void SongDancingQueen(void *pvParameters)  // This is a task.
 {
   (void) pvParameters;
 
   for (;;) // A Task shall never return or exit.
-  {
-    //SetAllPixelsRGB(0,0,0);
-    OnEyes(20,0,0);
-
-
-    //You are the dancing queen
+  { //You are the dancing queen
     PlayChirp(NOTE_E5, 50);
     vTaskDelay(500 / portTICK_PERIOD_MS);
     OffChirp();
