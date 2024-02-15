@@ -22,6 +22,16 @@ Visit http://www.arduino.cc to learn about the Arduino.
 #include <Arduino_FreeRTOS.h>
 #include "RingoHardware.h"
 
+//void interrupt vader(void)
+//{
+  //HesComing();
+//}
+
+volatile int lightState = 0; 
+int sensorRight;
+int sensorLeft;
+int sensorRear;
+
 void setup() {
   /// Setup Ringo ///
   HardwareBegin();        //initialize Ringo's brain to work with his circuitry
@@ -30,6 +40,11 @@ void setup() {
   IsIRDone();
   GetIRButton();
   RestartTimer();
+  //attachInterrupt(0, pin_ISR, CHANGE); //attach an interrupt to the ISR vector
+
+  Serial.begin(19200);
+  Serial.println("Setup");
+  
 
   xTaskCreate(
      TaskBlink
@@ -37,6 +52,14 @@ void setup() {
       ,  128  // This stack size can be checked & adjusted by reading the Stack Highwater
       ,  NULL
       ,  2  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
+      ,  NULL );
+
+  xTaskCreate(
+     LightSense
+      ,  (const portCHAR *)"Sensor"   // A name just for humans
+      ,  128  // This stack size can be checked & adjusted by reading the Stack Highwater
+      ,  NULL
+      ,  3  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
       ,  NULL );
 
   xTaskCreate(
@@ -57,7 +80,36 @@ void setup() {
   
 }
 
+
 void loop() {}
+
+void LightSense(void *pvParameters)  // This is a task.
+{
+  (void) pvParameters;
+  for (;;) // A Task shall never return or exit.
+  {
+    digitalWrite(Source_Select, HIGH);
+    sensorLeft = analogRead(LightSense_Left);
+    sensorRight = analogRead(LightSense_Right);
+    sensorRear = analogRead(LightSense_Rear);
+
+    //SwitchMotorsToSerial();
+    Serial.print(sensorLeft);
+    Serial.print("   ");
+    Serial.print(sensorRight);
+    Serial.print("   ");
+    Serial.print(sensorRear);
+    Serial.println();
+    Serial.println();
+    delay(1000);
+
+    if(sensorLeft<550){
+      HesComing();
+      //interrupts();
+    }
+
+  }
+}
 
 void TaskBlink(void *pvParameters)  // This is a task.
 {

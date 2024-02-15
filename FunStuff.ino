@@ -23,6 +23,112 @@ Visit http://www.arduino.cc to learn about the Arduino.
 
 
 // ***************************************************
+// New Functions
+// ***************************************************
+
+void HesComing(void){
+   //noInterrupts();
+   OnEyes(150, 0, 0);   // turn eyes red
+   vTaskDelay(100 / portTICK_PERIOD_MS);
+
+   PlayChirp(NOTE_G4, 50);
+   vTaskDelay(600 / portTICK_PERIOD_MS);
+   OffChirp();
+   vTaskDelay(25 / portTICK_PERIOD_MS);
+    
+   PlayChirp(NOTE_G4, 50);
+   vTaskDelay(600 / portTICK_PERIOD_MS);
+   OffChirp();
+   vTaskDelay(25 / portTICK_PERIOD_MS);
+
+   PlayChirp(NOTE_G4, 50);
+   vTaskDelay(600 / portTICK_PERIOD_MS);
+   OffChirp();
+   vTaskDelay(25 / portTICK_PERIOD_MS);
+
+   PlayChirp(NOTE_DS4, 50);
+   vTaskDelay(300 / portTICK_PERIOD_MS);
+   OffChirp();
+   vTaskDelay(25 / portTICK_PERIOD_MS);
+
+   PlayChirp(NOTE_AS4, 50);
+   vTaskDelay(300 / portTICK_PERIOD_MS);
+   OffChirp();
+   vTaskDelay(25 / portTICK_PERIOD_MS);
+
+   PlayChirp(NOTE_G4, 50);
+   vTaskDelay(600 / portTICK_PERIOD_MS);
+   OffChirp();
+   vTaskDelay(25 / portTICK_PERIOD_MS);
+   OffPixels();
+
+   PlayChirp(NOTE_DS4, 50);
+   vTaskDelay(300 / portTICK_PERIOD_MS);
+   OffChirp();
+   vTaskDelay(25 / portTICK_PERIOD_MS);
+
+   PlayChirp(NOTE_AS4, 50);
+   vTaskDelay(300 / portTICK_PERIOD_MS);
+   OffChirp();
+   vTaskDelay(25 / portTICK_PERIOD_MS);
+
+   PlayChirp(NOTE_G4, 50);
+   vTaskDelay(600 / portTICK_PERIOD_MS);
+   OffChirp();
+   vTaskDelay(300 / portTICK_PERIOD_MS);
+
+   ////////////
+   PlayChirp(NOTE_D5, 50);
+   vTaskDelay(600 / portTICK_PERIOD_MS);
+   OffChirp();
+   vTaskDelay(25 / portTICK_PERIOD_MS);
+    
+   PlayChirp(NOTE_D5, 50);
+   vTaskDelay(600 / portTICK_PERIOD_MS);
+   OffChirp();
+   vTaskDelay(25 / portTICK_PERIOD_MS);
+
+   PlayChirp(NOTE_D5, 50);
+   vTaskDelay(600 / portTICK_PERIOD_MS);
+   OffChirp();
+   vTaskDelay(25 / portTICK_PERIOD_MS);
+
+   PlayChirp(NOTE_DS5, 50);
+   vTaskDelay(300 / portTICK_PERIOD_MS);
+   OffChirp();
+   vTaskDelay(25 / portTICK_PERIOD_MS);
+
+   PlayChirp(NOTE_AS4, 50);
+   vTaskDelay(300 / portTICK_PERIOD_MS);
+   OffChirp();
+   vTaskDelay(25 / portTICK_PERIOD_MS);
+
+   PlayChirp(NOTE_FS4, 50);
+   vTaskDelay(600 / portTICK_PERIOD_MS);
+   OffChirp();
+   vTaskDelay(25 / portTICK_PERIOD_MS);
+   OffPixels();
+
+   PlayChirp(NOTE_DS4, 50);
+   vTaskDelay(300 / portTICK_PERIOD_MS);
+   OffChirp();
+   vTaskDelay(25 / portTICK_PERIOD_MS);
+
+   PlayChirp(NOTE_AS4, 50);
+   vTaskDelay(300 / portTICK_PERIOD_MS);
+   OffChirp();
+   vTaskDelay(25 / portTICK_PERIOD_MS);
+
+   PlayChirp(NOTE_G4, 50);
+   vTaskDelay(600 / portTICK_PERIOD_MS);
+   OffChirp();
+   vTaskDelay(25 / portTICK_PERIOD_MS);
+   OffPixels();
+}
+
+
+
+// ***************************************************
 // Short Animations
 // ***************************************************
 

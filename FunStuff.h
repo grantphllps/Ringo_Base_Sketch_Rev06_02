@@ -22,7 +22,11 @@ Visit http://www.arduino.cc to learn about the Arduino.
 #ifndef FUNSTUFF_H
 #define FUNSTUFF_H
 
+// ***************************************************
+// New Functions
+// ***************************************************
 
+extern void HesComing(void);
 
 
 // ***************************************************
