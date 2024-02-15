@@ -27,6 +27,7 @@ Visit http://www.arduino.cc to learn about the Arduino.
 // ***************************************************
 
 extern void HesComing(void);
+extern void DancingQueen(void);
 
 
 // ***************************************************
