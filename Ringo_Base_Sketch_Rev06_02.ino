@@ -27,7 +27,7 @@ bool BackLightsState = false;
 int sensorRight;
 int sensorLeft;
 int sensorRear;
-TaskHandle_t poop;
+TaskHandle_t hand;
 
 
 
@@ -75,7 +75,7 @@ void setup() {
       , 128
       , NULL
       , 3
-      , &poop);
+      , &hand);
          
    xTaskCreate(
     Dancing
@@ -161,7 +161,7 @@ void Checker(void *pvParameters)
 
     //Check the light intensity for the aperiodic task
     if (sensorRear < 450 || sensorRear > 600) {
-      vTaskResume(poop);
+      vTaskResume(hand);
     }
 
     vTaskDelay(100 / portTICK_PERIOD_MS);
