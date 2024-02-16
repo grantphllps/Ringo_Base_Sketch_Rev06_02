@@ -574,6 +574,7 @@ void IRHandler(void){//Ver. 2.0, Dustin Soodak, Kevin King
   char Level;
   noInterrupts();
   IRTime=TCNT1;
+  IRFlag = true;
    
   Level=digitalRead(_38kHz_Rx);  
 
@@ -1156,7 +1157,3 @@ char CheckMenuButton(void){
 // ***************************************************
 // end Recorded Data
 // ***************************************************
-
-
-
-

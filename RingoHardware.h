@@ -55,6 +55,9 @@ Visit http://www.arduino.cc to learn about the Arduino.
 // end Pin defines
 // ***************************************************
 
+//NEW THINGS
+extern bool IRFlag = false;
+
 // ***************************************************
 // General hardware
 // ***************************************************

@@ -26,9 +26,19 @@ Visit http://www.arduino.cc to learn about the Arduino.
 // New Functions
 // ***************************************************
 
+void Dancing(void) {
+      Motors(-50, 50);
+      vTaskDelay(125 / portTICK_PERIOD_MS);
+      Motors(0, 0);
+      vTaskDelay(125 / portTICK_PERIOD_MS);
+      Motors(50, -50);
+      vTaskDelay(125 / portTICK_PERIOD_MS);
+      Motors(0, 0);
+      vTaskDelay(1000 / portTICK_PERIOD_MS);
+}
+
 void HesComing(void){
    //noInterrupts();
-   OnEyes(150, 0, 0);   // turn eyes red
    vTaskDelay(100 / portTICK_PERIOD_MS);
 
    PlayChirp(NOTE_G4, 50);
@@ -121,7 +131,7 @@ void HesComing(void){
    vTaskDelay(600 / portTICK_PERIOD_MS);
    OffChirp();
    vTaskDelay(25 / portTICK_PERIOD_MS);
-   OffPixels();
+
 }
 
 
@@ -710,11 +720,3 @@ void RandomEyes(void){//Ver. 1.0, Kevin King             //Sets the pair of eyes
 // ***************************************************
 // end Additional Notes:  Chirp / Sound / Piezo
 // ***************************************************
-
-
-
-
-
-
-
-

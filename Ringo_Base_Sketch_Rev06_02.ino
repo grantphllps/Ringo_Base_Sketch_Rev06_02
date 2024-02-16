@@ -22,15 +22,14 @@ Visit http://www.arduino.cc to learn about the Arduino.
 #include <Arduino_FreeRTOS.h>
 #include "RingoHardware.h"
 
-//void interrupt vader(void)
-//{
-  //HesComing();
-//}
-
-volatile int lightState = 0; 
+volatile int LightsOn = 1;
+bool BackLightsState = false;
 int sensorRight;
 int sensorLeft;
 int sensorRear;
+TaskHandle_t poop;
+
+
 
 void setup() {
   /// Setup Ringo ///
@@ -40,143 +39,131 @@ void setup() {
   IsIRDone();
   GetIRButton();
   RestartTimer();
-  //attachInterrupt(0, pin_ISR, CHANGE); //attach an interrupt to the ISR vector
-
+  IRFlag = false;
+  
   Serial.begin(19200);
   Serial.println("Setup");
-  
+ 
 
   xTaskCreate(
-     TaskBlink
-      ,  (const portCHAR *)"Remote"   // A name just for humans
-      ,  128  // This stack size can be checked & adjusted by reading the Stack Highwater
-      ,  NULL
-      ,  2  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
-      ,  NULL );
+    Vader
+      , (const portCHAR *)"Vader"
+      , 128
+      , NULL
+      , 0
+      , NULL);
 
-  xTaskCreate(
-     LightSense
-      ,  (const portCHAR *)"Sensor"   // A name just for humans
-      ,  128  // This stack size can be checked & adjusted by reading the Stack Highwater
-      ,  NULL
-      ,  3  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
-      ,  NULL );
+   xTaskCreate(
+    Checker
+      , (const portCHAR *)"Checker"
+      , 128
+      , NULL
+      , 2
+      , NULL);
 
-  xTaskCreate(
-     LeftRightDance
-      ,  (const portCHAR *)"Dance"   // A name just for humans
-      ,  128  // This stack size can be checked & adjusted by reading the Stack Highwater
-      ,  NULL
-      ,  2  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
-      ,  NULL );
-  
-}
+   xTaskCreate(
+    Blink
+      , (const portCHAR *)"BR"
+      , 128
+      , NULL
+      , 1
+      , NULL);
 
-
-void loop() {}
-
-void LightSense(void *pvParameters)  // This is a task.
-{
-  (void) pvParameters;
-  for (;;) // A Task shall never return or exit.
-  {
-    digitalWrite(Source_Select, HIGH);
-    sensorLeft = analogRead(LightSense_Left);
-    sensorRight = analogRead(LightSense_Right);
-    sensorRear = analogRead(LightSense_Rear);
-
-    //SwitchMotorsToSerial();
-    Serial.print(sensorLeft);
-    Serial.print("   ");
-    Serial.print(sensorRight);
-    Serial.print("   ");
-    Serial.print(sensorRear);
-    Serial.println();
-    Serial.println();
-    delay(1000);
-
-    if(sensorLeft<550){
-      HesComing();
-      vTaskDelay(500 / portTICK_PERIOD_MS);
-      //interrupts();
-    }
-    //else{
-      //DancingQueen();
-    //}
-
-  }
-}
-
-void TaskBlink(void *pvParameters)  // This is a task.
-{
-  (void) pvParameters;
-
-  for (;;) // A Task shall never return or exit.
-  {restart:              //label to cause program to come back to here if "MENU" on remote is pressed in any example
-   byte button;
-   //Example user code:  
-
-    if(IsIRDone()){                   //wait for an IR remote control command to be received
-      button = GetIRButton();       // read which button was pressed, store in "button" variable
-
-     
-      if(button){                   // if "button" is not zero...
-        switch (button){            // activate a behavior based on which button was pressed
-
-         case 1:                    // Button 1
-         RxIRRestart(4);            // restart wait for 4 byte IR remote command
-         OnEyes(220, 30, 160);   // turn eyes to plum
-         //vTaskDelay(1000 / portTICK_PERIOD_MS);               // brief delay
-         //OffPixels();
-         break;
-
-         case 2:                    // Button 2
-         RxIRRestart(4);            // restart wait for 4 byte IR remote command
-         OnEyes(120, 0, 0);   // turn eyes red
-         //vTaskDelay(1000 / portTICK_PERIOD_MS);               // brief delay
-         //OffPixels();
-         break;
-
-         case 3:                    // Button 3
-         RxIRRestart(4);            // restart wait for 4 byte IR remote command
-         OnEyes(0, 0, 160);   // turn eyes blue
-         vTaskDelay(1000 / portTICK_PERIOD_MS);               // brief delay
-         OffPixels();
-         break;
+   xTaskCreate(
+    ToggleLights
+      , (const portCHAR *)"BR"
+      , 128
+      , NULL
+      , 3
+      , &poop);
          
-         default:                   // if no match, break out and wait for a new code
-         PlayNonAck();              // quick "NonAck" chirp to know a known button was received, but not understood as a valid command
-         RxIRRestart(4);            //wait for 4 byte IR remote command
-         SwitchMotorsToSerial();
-         Serial.print("button: ");Serial.println(button);  // send button number pressed to serial window
+   xTaskCreate(
+    Dancing
+      , (const portCHAR *)"BR"
+      , 128
+      , NULL
+      , 0
+      , NULL);
       
-         break;
-        }
-      }
-    }//end if(IsIRDone())
+}
 
+void loop() {};
+
+//Periodic "Imperial March"
+void Vader(void *pvParameters) 
+{
+  (void) pvParameters;
+  for(;;) {
+    HesComing();
   }
 }
 
-void LeftRightDance(void *pvParameters)
+//Periodic "Dancing"
+void Dancing(void *pvParameters) 
 {
   (void) pvParameters;
-  for (;;) // A Task shall never return or exit.
-    {
-      Motors(-50, 50);
-      vTaskDelay(125 / portTICK_PERIOD_MS);
-      Motors(0, 0);
-      vTaskDelay(125 / portTICK_PERIOD_MS);
-      Motors(50, -50);
-      vTaskDelay(125 / portTICK_PERIOD_MS);
-      Motors(0, 0);
-      vTaskDelay(1000 / portTICK_PERIOD_MS);
-    }
+  for(;;) {
+    Dancing();
+  }
 }
 
+//Sporatic Blinking, this task is event triggered but has an upper
+//Limit to the number of time it can be called
+void Blink(void *pvParameters) 
+{
+  (void) pvParameters;
+  for(;;) {
+      if (LightsOn) {
+        OnEyes(30,30,30);
+      } else {
+        OnEyes(0,0,0);
+      }
+      vTaskDelay(100 / portTICK_PERIOD_MS);
+  }
+}
 
+//Aperiodic Light toggling, this task blocks after it has completed
+//A single loop. 
+void ToggleLights(void *pvParameters) 
+{
+  (void) pvParameters;
+  for(;;) {
+    sensorRear = analogRead(LightSense_Rear);
+    if (sensorRear < 400) {
+      SetPixelRGB(3,30,30,30);
+      SetPixelRGB(2,30,30,30);
+      SetPixelRGB(1,30,30,30);
+    } else {
+      SetPixelRGB(3,0,0,0);
+      SetPixelRGB(2,0,0,0);
+      SetPixelRGB(1,0,0,0);
+    }
+    vTaskSuspend(NULL);
+  }
+}
 
+//Periodic sensor Checker, 
+void Checker(void *pvParameters) 
+{
+  (void) pvParameters;
+  for(;;) {
+    
+    digitalWrite(Source_Select, HIGH);
+    sensorRear = analogRead(LightSense_Rear);
+    sensorLeft = analogRead(LightSense_Left);
 
+    //Check the light intensity for the sporatic task
+    if(sensorRear < 550) {
+      LightsOn = 1;
+    } else {
+      LightsOn = 0;
+    }
 
+    //Check the light intensity for the aperiodic task
+    if (sensorRear < 450 || sensorRear > 600) {
+      vTaskResume(poop);
+    }
 
-
+    vTaskDelay(100 / portTICK_PERIOD_MS);
+  }
+}

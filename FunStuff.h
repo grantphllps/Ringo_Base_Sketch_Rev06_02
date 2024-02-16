@@ -28,6 +28,7 @@ Visit http://www.arduino.cc to learn about the Arduino.
 
 extern void HesComing(void);
 extern void DancingQueen(void);
+extern void Dancing(void);
 
 
 // ***************************************************
@@ -174,4 +175,3 @@ extern void RandomEyes(void);                                //Sets the pair of 
 // ***************************************************
 
 #endif
-
