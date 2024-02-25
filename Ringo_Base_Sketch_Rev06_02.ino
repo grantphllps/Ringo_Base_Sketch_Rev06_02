@@ -22,12 +22,13 @@ Visit http://www.arduino.cc to learn about the Arduino.
 #include <Arduino_FreeRTOS.h>
 #include "RingoHardware.h"
 
-volatile int LightsOn = 1;
-bool BackLightsState = false;
+int songState = 0; //0 for dancing queen, 1 for imp march
 int sensorRight;
 int sensorLeft;
 int sensorRear;
-TaskHandle_t hand;
+TaskHandle_t VaderHandle;
+TaskHandle_t DQHandle;
+TaskHandle_t DancingHandle;
 
 
 
@@ -50,32 +51,25 @@ void setup() {
       , (const portCHAR *)"Vader"
       , 128
       , NULL
-      , 0
-      , NULL);
+      , 2
+      , &VaderHandle);
+
+  xTaskCreate(
+    DQ
+      , (const portCHAR *)"Vader"
+      , 128
+      , NULL
+      , 2
+      , &DQHandle);
 
    xTaskCreate(
     Checker
       , (const portCHAR *)"Checker"
       , 128
       , NULL
-      , 2
-      , NULL);
-
-   xTaskCreate(
-    Blink
-      , (const portCHAR *)"BR"
-      , 128
-      , NULL
-      , 1
-      , NULL);
-
-   xTaskCreate(
-    ToggleLights
-      , (const portCHAR *)"BR"
-      , 128
-      , NULL
       , 3
-      , &hand);
+      , NULL);
+
          
    xTaskCreate(
     Dancing
@@ -83,8 +77,10 @@ void setup() {
       , 128
       , NULL
       , 0
-      , NULL);
-      
+      , &DancingHandle);
+
+
+      vTaskSuspend(VaderHandle);
 }
 
 void loop() {};
@@ -98,6 +94,14 @@ void Vader(void *pvParameters)
   }
 }
 
+void DQ(void *pvParameters) 
+{
+  (void) pvParameters;
+  for(;;) {
+    DancingQueen();
+  }
+}
+
 //Periodic "Dancing"
 void Dancing(void *pvParameters) 
 {
@@ -107,40 +111,7 @@ void Dancing(void *pvParameters)
   }
 }
 
-//Sporatic Blinking, this task is event triggered but has an upper
-//Limit to the number of time it can be called
-void Blink(void *pvParameters) 
-{
-  (void) pvParameters;
-  for(;;) {
-      if (LightsOn) {
-        OnEyes(30,30,30);
-      } else {
-        OnEyes(0,0,0);
-      }
-      vTaskDelay(100 / portTICK_PERIOD_MS);
-  }
-}
 
-//Aperiodic Light toggling, this task blocks after it has completed
-//A single loop. 
-void ToggleLights(void *pvParameters) 
-{
-  (void) pvParameters;
-  for(;;) {
-    sensorRear = analogRead(LightSense_Rear);
-    if (sensorRear < 400) {
-      SetPixelRGB(3,30,30,30);
-      SetPixelRGB(2,30,30,30);
-      SetPixelRGB(1,30,30,30);
-    } else {
-      SetPixelRGB(3,0,0,0);
-      SetPixelRGB(2,0,0,0);
-      SetPixelRGB(1,0,0,0);
-    }
-    vTaskSuspend(NULL);
-  }
-}
 
 //Periodic sensor Checker, 
 void Checker(void *pvParameters) 
@@ -151,19 +122,31 @@ void Checker(void *pvParameters)
     digitalWrite(Source_Select, HIGH);
     sensorRear = analogRead(LightSense_Rear);
     sensorLeft = analogRead(LightSense_Left);
+    int newSong;
 
-    //Check the light intensity for the sporatic task
-    if(sensorRear < 550) {
-      LightsOn = 1;
+    if (sensorRear < 500) {
+      newSong = 1;
+      OnEyes(50,0,0);
+      
     } else {
-      LightsOn = 0;
+      newSong = 0;
+      OnEyes(0,0,50);
     }
 
-    //Check the light intensity for the aperiodic task
-    if (sensorRear < 450 || sensorRear > 600) {
-      vTaskResume(hand);
+    if (newSong != songState) {//If we are not playing the correct song
+       if (newSong == 1) {//If supposed to be playing "vader"
+        songState = 1;
+        vTaskSuspend(DQHandle);
+        vTaskSuspend(DancingHandle);
+        vTaskResume(VaderHandle);
+       } else if(newSong == 0) {
+        songState = 0;
+        vTaskSuspend(VaderHandle);
+        vTaskResume(DQHandle);
+        vTaskResume(DancingHandle);
+       }
     }
-
-    vTaskDelay(100 / portTICK_PERIOD_MS);
+    
+    vTaskDelay(50 / portTICK_PERIOD_MS);
   }
 }
