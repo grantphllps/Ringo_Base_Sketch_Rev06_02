@@ -26,42 +26,29 @@ int songState = 0; //0 for dancing queen, 1 for imp march
 int sensorRight;
 int sensorLeft;
 int sensorRear;
-TaskHandle_t VaderHandle;
-TaskHandle_t DQHandle;
-TaskHandle_t DancingHandle;
+
+volatile int heading = 0;
+
+//TaskHandle_t VaderHandle;
+//TaskHandle_t DQHandle;
+//TaskHandle_t DancingHandle;
 
 
 
 void setup() {
   /// Setup Ringo ///
-  HardwareBegin();        //initialize Ringo's brain to work with his circuitry
-  PlayStartChirp();       //Play startup chirp and blink eyes
-  RxIRRestart(4);         //wait for 4 byte IR remote command
-  IsIRDone();
-  GetIRButton();
-  RestartTimer();
-  IRFlag = false;
-  
+  HardwareBegin();              //initialize Ringo's brain to work with his circuitry
+  PlayStartChirp();             //Play startup chirp and blink eyes
+  delay(1000);
+  NavigationBegin();            //Turns on and intializes the gyroscope and accelerometer
+  delay(1000);
+  CalibrateNavigationSensors(); //Needed?
+  delay(1000);
+//  ZeroNavigation();             //Needed?
+
   Serial.begin(19200);
   Serial.println("Setup");
  
-
-  xTaskCreate(
-    Vader
-      , (const portCHAR *)"Vader"
-      , 128
-      , NULL
-      , 2
-      , &VaderHandle);
-
-  xTaskCreate(
-    DQ
-      , (const portCHAR *)"Vader"
-      , 128
-      , NULL
-      , 2
-      , &DQHandle);
-
    xTaskCreate(
     Checker
       , (const portCHAR *)"Checker"
@@ -70,83 +57,24 @@ void setup() {
       , 3
       , NULL);
 
-         
-   xTaskCreate(
-    Dancing
-      , (const portCHAR *)"BR"
-      , 128
-      , NULL
-      , 0
-      , &DancingHandle);
-
-
-      vTaskSuspend(VaderHandle);
 }
 
-void loop() {};
-
-//Periodic "Imperial March"
-void Vader(void *pvParameters) 
-{
-  (void) pvParameters;
-  for(;;) {
-    HesComing();
-  }
-}
-
-void DQ(void *pvParameters) 
-{
-  (void) pvParameters;
-  for(;;) {
-    DancingQueen();
-  }
-}
-
-//Periodic "Dancing"
-void Dancing(void *pvParameters) 
-{
-  (void) pvParameters;
-  for(;;) {
-    Dancing();
-  }
-}
-
-
+void loop() {}
 
 //Periodic sensor Checker, 
 void Checker(void *pvParameters) 
 {
   (void) pvParameters;
   for(;;) {
-    
-    digitalWrite(Source_Select, HIGH);
-    sensorRear = analogRead(LightSense_Rear);
-    sensorLeft = analogRead(LightSense_Left);
-    int newSong;
+    SimpleGyroNavigation();
+    heading = PresentHeading();
 
-    if (sensorRear < 500) {
-      newSong = 1;
+    if (abs(heading) > 90) {
       OnEyes(50,0,0);
-      
     } else {
-      newSong = 0;
-      OnEyes(0,0,50);
-    }
-
-    if (newSong != songState) {//If we are not playing the correct song
-       if (newSong == 1) {//If supposed to be playing "vader"
-        songState = 1;
-        vTaskSuspend(DQHandle);
-        vTaskSuspend(DancingHandle);
-        vTaskResume(VaderHandle);
-       } else if(newSong == 0) {
-        songState = 0;
-        vTaskSuspend(VaderHandle);
-        vTaskResume(DQHandle);
-        vTaskResume(DancingHandle);
-       }
+      OnEyes(0,0,0);
     }
     
-    vTaskDelay(50 / portTICK_PERIOD_MS);
+    vTaskDelay(10 / portTICK_PERIOD_MS);
   }
 }
