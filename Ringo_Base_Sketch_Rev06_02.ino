@@ -31,13 +31,15 @@ volatile int currentHeading = 0;
 volatile int headingError = 0;
 volatile int headingTarget = 0;
 volatile int headingOutput = 0;
+volatile int errorSum = 0;
 volatile int left;
 volatile int right;
 volatile int velocityBias = 30; //constant velocity speed
+float updateTime = 0.08;
 
 
-int kp = 5;
-int ki = 0;
+int kp = 2; //Ku = 5
+int ki = 5; //Tu = 0.5
 int kd = 0;
 
 int controlSaturation = 100;
@@ -47,6 +49,13 @@ int controlSaturation = 100;
 //TaskHandle_t DQHandle;
 //TaskHandle_t DancingHandle;
 
+int sign(int value) { //funtion that just returns a number's sign
+  if (value >= 0) {
+    return 1;
+  } else {
+    return -1;
+  }
+}
 
 
 void setup() {
@@ -61,6 +70,8 @@ void setup() {
 
   delay(1000);
   ZeroNavigation();             //Needed?
+//  Serial.begin(19200);
+//  Serial.println("send it");
 
  
    xTaskCreate(
@@ -92,7 +103,7 @@ void Checker(void *pvParameters)
     currentHeading = PresentHeading();
 
     
-    vTaskDelay(25 / portTICK_PERIOD_MS);
+    vTaskDelay(20 / portTICK_PERIOD_MS);
   }
 }
 
@@ -104,24 +115,31 @@ void Controller(void *pvParameters)
 
 
     headingError = headingTarget - currentHeading;
+    errorSum = errorSum + updateTime * headingError;
+    
+    headingOutput = kp*headingError + ki*errorSum;
 
-    if (headingError > 5) {
+    if (headingOutput > 0) {
       OnEyes(0,50,0); //Green
-    } else if (headingError < -5) {
+    } else if (headingOutput < 0) {
       OnEyes(50,0,0); //Red
-    } else if (headingError < 5 && headingError > -5) {
+    } else if (headingError == 0) {
       OnEyes(0,0,50); //Blue
     }
-    
-    headingOutput = kp*headingError;
-
 
     if (abs(headingOutput) > controlSaturation) {
-      headingOutput = controlSaturation;
-    }
+      headingOutput = controlSaturation * sign(headingOutput);
+      left = 0.5*headingOutput + headingOutput;
+      right = 0,5*headingOutput - headingOutput;
+    } else {
+      left =velocityBias + headingOutput;
+      right=velocityBias - headingOutput;
       
-    left =velocityBias + headingOutput;
-    right=velocityBias - headingOutput;
+    }
+
+
+    //Serial.println(headingOutput);
+
     
     Motors(left,right);
 
