@@ -27,7 +27,21 @@ int sensorRight;
 int sensorLeft;
 int sensorRear;
 
-volatile int heading = 0;
+volatile int currentHeading = 0;
+volatile int headingError = 0;
+volatile int headingTarget = 0;
+volatile int headingOutput = 0;
+volatile int left;
+volatile int right;
+volatile int velocityBias = 30; //constant velocity speed
+
+
+int kp = 5;
+int ki = 0;
+int kd = 0;
+
+int controlSaturation = 100;
+
 
 //TaskHandle_t VaderHandle;
 //TaskHandle_t DQHandle;
@@ -39,15 +53,15 @@ void setup() {
   /// Setup Ringo ///
   HardwareBegin();              //initialize Ringo's brain to work with his circuitry
   PlayStartChirp();             //Play startup chirp and blink eyes
+  SwitchMotorsToSerial();
   delay(1000);
   NavigationBegin();            //Turns on and intializes the gyroscope and accelerometer
   delay(1000);
   CalibrateNavigationSensors(); //Needed?
-  delay(1000);
-//  ZeroNavigation();             //Needed?
 
-  Serial.begin(19200);
-  Serial.println("Setup");
+  delay(1000);
+  ZeroNavigation();             //Needed?
+
  
    xTaskCreate(
     Checker
@@ -57,9 +71,17 @@ void setup() {
       , 3
       , NULL);
 
+   xTaskCreate(
+    Controller
+      , (const portCHAR *)"Controller"
+      , 128
+      , NULL
+      , 2
+      , NULL);
+
 }
 
-void loop() {}
+void loop() {};
 
 //Periodic sensor Checker, 
 void Checker(void *pvParameters) 
@@ -67,14 +89,43 @@ void Checker(void *pvParameters)
   (void) pvParameters;
   for(;;) {
     SimpleGyroNavigation();
-    heading = PresentHeading();
+    currentHeading = PresentHeading();
 
-    if (abs(heading) > 90) {
-      OnEyes(50,0,0);
-    } else {
-      OnEyes(0,0,0);
+    
+    vTaskDelay(25 / portTICK_PERIOD_MS);
+  }
+}
+
+//PID controller for heading
+void Controller(void *pvParameters) 
+{
+  (void) pvParameters;
+  for(;;) {
+
+
+    headingError = headingTarget - currentHeading;
+
+    if (headingError > 5) {
+      OnEyes(0,50,0); //Green
+    } else if (headingError < -5) {
+      OnEyes(50,0,0); //Red
+    } else if (headingError < 5 && headingError > -5) {
+      OnEyes(0,0,50); //Blue
     }
     
-    vTaskDelay(10 / portTICK_PERIOD_MS);
+    headingOutput = kp*headingError;
+
+
+    if (abs(headingOutput) > controlSaturation) {
+      headingOutput = controlSaturation;
+    }
+      
+    left =velocityBias + headingOutput;
+    right=velocityBias - headingOutput;
+    
+    Motors(left,right);
+
+    
+    vTaskDelay(80 / portTICK_PERIOD_MS);
   }
 }
