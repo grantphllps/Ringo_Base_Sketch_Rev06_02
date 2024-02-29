@@ -22,7 +22,7 @@ Visit http://www.arduino.cc to learn about the Arduino.
 #include <Arduino_FreeRTOS.h>
 #include "RingoHardware.h"
 
-//int songState = 0; //0 for dancing queen, 1 for imp march
+int songState = 0; //0 for dancing queen, 1 for imp march
 int sensorRight;
 int sensorLeft;
 int sensorRear;
@@ -31,18 +31,18 @@ volatile int currentHeading = 0;
 volatile int headingError = 0;
 volatile int headingTarget = 0;
 volatile int headingOutput = 0;
-volatile int derivativeValue = 0;
-volatile int headingOld = 0;
 volatile int errorSum = 0;
 volatile int left;
 volatile int right;
 volatile int velocityBias = 30; //constant velocity speed
 float updateTime = 0.08;
 
+int turnCounter = -4;
+
 
 int kp = 2; //Ku = 5
-int ki = 5; //Tu = 0.5
-int kd = 0.1;
+int ki = 3; //Tu = 0.5
+int kd = 0;
 
 int controlSaturation = 100;
 
@@ -72,8 +72,8 @@ void setup() {
 
   delay(1000);
   ZeroNavigation();             //Needed?
-  Serial.begin(19200);
-  Serial.println("send it");
+//  Serial.begin(19200);
+//  Serial.println("send it");
 
  
    xTaskCreate(
@@ -92,12 +92,48 @@ void setup() {
       , 2
       , NULL);
 
+      
+   xTaskCreate(
+    headingChange
+      , (const portCHAR *)"headingChange"
+      , 128
+      , NULL
+      , 2
+      , NULL);
+
 }
 
 void loop() {};
 
 //Periodic sensor Checker, 
 void Checker(void *pvParameters) 
+{
+  (void) pvParameters;
+  for(;;) {
+
+    vTaskDelay(5000 / portTICK_PERIOD_MS);
+    if (turnCounter >= 0) {
+      headingTarget = headingTarget + 90;
+//      if (turnCounter == 0) {
+//        headingTarget = 0;
+//      }
+    } else {
+      headingTarget = headingTarget - 90;
+    }
+    
+    if (turnCounter == 3) {
+      turnCounter = -5;
+    }
+
+    
+    turnCounter++;
+    
+    
+  }
+}
+
+//Periodic heading change, 
+void headingChange(void *pvParameters) 
 {
   (void) pvParameters;
   for(;;) {
@@ -119,7 +155,7 @@ void Controller(void *pvParameters)
     headingError = headingTarget - currentHeading;
     errorSum = errorSum + updateTime * headingError;
     
-    headingOutput = kp*headingError+ ki*errorSum +kd*derivativeValue;
+    headingOutput = kp*headingError + ki*errorSum;
 
     if (headingOutput > 0) {
       OnEyes(0,50,0); //Green
@@ -130,31 +166,16 @@ void Controller(void *pvParameters)
     }
 
     if (abs(headingOutput) > controlSaturation) {
-      headingOutput = controlSaturation * sign(headingOutput);
-      left = 0.5*headingOutput + headingOutput;
-      right = 0.5*headingOutput - headingOutput;
-    } else {
-      left =velocityBias + headingOutput;
-      right=velocityBias - headingOutput;
-      
+      headingOutput = controlSaturation*sign(headingOutput);
     }
-
-    //new-old/time
-    //new (current) = headingError
-    //
-    derivativeValue = (headingError - headingOld)/updateTime;
-
-    //Serial.println(headingOutput);
-    Serial.println(errorSum);
-
     
+    left =velocityBias + headingOutput;
+    right=velocityBias - headingOutput;
+
+   
     Motors(left,right);
 
-    headingTarget = 90;
-
-    //save old here for derivative
-    headingOld = headingError;
-
+    
     vTaskDelay(80 / portTICK_PERIOD_MS);
   }
 }
